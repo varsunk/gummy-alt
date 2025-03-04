@@ -1,0 +1,7 @@
+app:
+  name: "gummy-search-alt"
+  agent: "Gummy-Search-Alt 0.1 by /u/OmnipotentDoggo"
+requests:
+  token_acquire_url: "https://www.reddit.com"
+  request_url: "https://oauth.reddit.com"
+

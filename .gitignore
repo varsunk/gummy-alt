@@ -1,0 +1,6 @@
+# exclude venv
+venv
+venv/*
+
+# exclude .env
+.env
