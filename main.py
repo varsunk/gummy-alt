@@ -5,6 +5,18 @@ from dotenv import load_dotenv
 import yaml
 import requests
 
+def scrape_subreddit(subreddit: string, num_posts: int):
+    """
+    Use praw capabilities to scrape a specific subreddit for its most recent n posts
+    """
+
+    client = praw.Reddit(
+        client_id,
+        client_secret,
+        user_agent
+    )
+
+
 if __name__ == "__main__":
     # capture env variables
     config = None

@@ -1,45 +1,28 @@
 # collect all the necessary credentials for the app
 import requests
 import requests.auth
-import os
-from dotenv import load_dotenv
-import yaml
+# import our own config class
+import config
 
-# load env variables
-load_dotenv()
+def retrieve_credentials(yml_file: str):
+    app_config = config.Config(yml_file)
 
-# app info
-APP_SECRET = os.getenv("APP_SECRET")
-APP_CLIENT_ID = os.getenv("APP_CLIENT_ID")
+    # making the request for the oauth token
+    client_auth = requests.auth.HTTPBasicAuth(app_config.app_client_id, app_config.app_secret)
+    post_data = {
+        "grant_type": app_config.app_grant_type,
+        "username": app_config.account_username,
+        "password": app_config.account_password
+    }
+    headers = {
+        "User-Agent": app_config.app_agent
+    }
 
-# personal credentials
-USERNAME = os.getenv("ACCOUNT_USERNAME")
-PASSWORD = os.getenv("ACCOUNT_PASSWORD")
-GRANT_TYPE = os.getenv("APP_GRANT_TYPE")
+    response = requests.post(
+        app_config.token_acquire_url + "/api/v1/access_token",
+        auth=client_auth,
+        data=post_data,
+        headers=headers
+    )
 
-# load yaml config
-config = None
-with open("gummy_config.yaml", 'r') as cfg:
-    config = yaml.safe_load(cfg)
-
-# making the request for the oauth token
-client_auth = requests.auth.HTTPBasicAuth(APP_CLIENT_ID, APP_SECRET)
-post_data = {
-    "grant_type": GRANT_TYPE,
-    "username": USERNAME,
-    "password": PASSWORD
-}
-headers = {
-    "User-Agent": config["app"]["agent"]
-}
-
-response = requests.post(
-    config["requests"]["token_acquire_url"] + "/api/v1/access_token",
-    auth=client_auth,
-    data=post_data,
-    headers=headers
-)
-
-# print response json (user should take note of their oauth token in order to use token)
-# TODO: write the response.json values to a file for proper formatting
-print(response.json())
+    return response
